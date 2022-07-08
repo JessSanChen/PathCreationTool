@@ -117,11 +117,20 @@ classdef Arc < Handle
             obj.P1.Pos = [obj.P1.Pos(1) + dx, obj.P1.Pos(2) + dy];
             obj.P2.Pos = [obj.P2.Pos(1) + dx, obj.P2.Pos(2) + dy];
             obj.C.Pos = [obj.C.Pos(1) + dx, obj.C.Pos(2) + dy];
+
+            if dx ~= 0 && dy ~= 0
+                obj.Frame.checkConnect(obj.P1);
+                obj.Frame.checkConnect(obj.P2);
+            end
         end
 
         function pivot(obj, x, y, dtheta)
             % LOTS of copy and paste - must abstract
             
+            % for event later
+            old1 = obj.P1.Pos;
+            old2 = obj.P2.Pos;
+
 %             dist1 = sqrt((obj.P1(1)-x)^2 + (obj.P1(2)-y)^2);
 %             dir1 = atan2d([obj.P1(2) - y],[obj.P1(1) - x]); 
             dist1 = dist(obj.P1.Pos, [x y]);
@@ -146,6 +155,13 @@ classdef Arc < Handle
                       y + distC * sind(newDirC)];
 
             obj.calcP2;
+
+            if ~isequal(obj.P1.Pos, old1)
+                obj.Frame.checkConnect(obj.P1);
+            end
+            if ~isequal(obj.P2.Pos, old2)
+                obj.Frame.checkConnect(obj.P2);
+            end
         end
 
         function scale(obj, factor)
@@ -160,16 +176,28 @@ classdef Arc < Handle
                           obj.C.Pos(2)+ (newRadius) * sind(dir1)];
             
             obj.calcP2;
+
+            if factor ~= 1
+                obj.Frame.checkConnect(obj.P1);
+                obj.Frame.checkConnect(obj.P2);
+            end
         end
         
-        function lengthen(obj, dTheta)
+        function lengthen(obj, newTheta)
             % newLength must be >0
             if dTheta <=0
                 error('New length must be greater than 0')
             end
+
+            oldTheta = obj.Theta;
+
             % anchor is 
-            obj.Theta = obj.Theta + dTheta;
+            obj.Theta = newTheta;
             obj.calcP2;
+
+            if oldTheta ~= newTheta
+                obj.Frame.checkConnect(obj.P2);
+            end
         end
 
         function out = export(obj)

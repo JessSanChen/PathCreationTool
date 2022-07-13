@@ -73,17 +73,6 @@ classdef LineSegment < handle
             val = dist(obj.P2.Pos, obj.P1.Pos);
         end
 
-        function val = getEndp(obj, point)
-            % given point [x y], returns the corresponding endpoint
-            if isequal(point, obj.P1.Pos)
-                val = obj.P1;
-            elseif isequal(point, obj.P2.Pos)
-                val = obj.P2;
-            else
-                error("Given xy-coordinate does not correspond to an endpoint")
-            end
-        end
-
         function val = otherP(obj, endp)
             if isequal(obj.P1,endp)
                 val = obj.P2;
@@ -94,16 +83,16 @@ classdef LineSegment < handle
             end
         end
 
-%         function val = getDir(obj, endp)
-%             % counter-clockwise angle in degrees
-% 
-%             x1 = endp.Pos(1);
-%             y1 = endp.Pos(2);
-%             other = obj.otherP(endp);
-%             x2 = other.Pos(1);
-%             y2 = other.Pos(2);
-%             val = atan2d(y2 - y1,x2 - x1);
-%         end
+        function val = getDir(obj, endp)
+            % counter-clockwise angle in degrees
+
+            x1 = endp.Pos(1);
+            y1 = endp.Pos(2);
+            other = obj.otherP(endp);
+            x2 = other.Pos(1);
+            y2 = other.Pos(2);
+            val = atan2d(y2 - y1,x2 - x1);
+        end
 
         function translate(obj, dx, dy)
             obj.P1.Pos = [obj.P1.Pos(1) + dx, obj.P1.Pos(2) + dy];
@@ -122,18 +111,17 @@ classdef LineSegment < handle
             old1 = obj.P1.Pos;
             old2 = obj.P2.Pos;
 
-            % ABSTRACT LATER
             dist1 = dist(point, obj.P1.Pos);
             dir1 = dir(point, obj.P1.Pos);
             newDir1 = dir1 + dtheta;
-            obj.P1.Pos = [point(1) + dist1 * cosd(newDir1), ... 
-                      point(2) + dist1 * sind(newDir1)];
+            obj.P1.Pos = [poin + dist1 * cosd(newDir1), ... 
+                      y + dist1 * sind(newDir1)];
 
-            dist2 = dist(point, obj.P2.Pos);
-            dir2 = dir(point, obj.P2.Pos);
+            dist2 = dist(obj.P2.Pos, [x y]);
+            dir2 = dir([x y], obj.P2.Pos);
             newDir2 = dir2 + dtheta;
-            obj.P2.Pos = [point(1) + dist2 * cosd(newDir2), ... 
-                      point(2) + dist2 * sind(newDir2)];
+            obj.P2.Pos = [x + dist2 * cosd(newDir2), ... 
+                      y + dist2 * sind(newDir2)];
 
             if ~isequal(obj.P1.Pos, old1)
                 obj.Frame.checkConnect(obj.P1);
@@ -149,10 +137,6 @@ classdef LineSegment < handle
             if factor <=0
                 error('Scale factor must be greater than 0')
             end
-
-            % for checkConnect later
-            old1 = obj.P1.Pos;
-            old2 = obj.P2.Pos;
 
             % repeated code, ABSTRACT LATER
             
@@ -170,32 +154,24 @@ classdef LineSegment < handle
             obj.P2.Pos = [point(1) + newDist2 * cosd(dir2),...
                             point(2) + newDist2 * sind(dir2)];
 
-            if ~isequal(obj.P1.Pos, old1)
+            if factor ~= 1
                 obj.Frame.checkConnect(obj.P1);
-            end
-            if ~isequal(obj.P2.Pos, old2)
                 obj.Frame.checkConnect(obj.P2);
             end
         end
 
-        function lengthen(obj, point, newLength)
-            % changed to take in point as input
-
+        function lengthen(obj, endp, newLength)
             % scale factor must be >0
             if newLength <=0
                 error('New length must be greater than 0')
             end
-            
-            % determine endpoint from point
-            endp = obj.getEndp(point);
 
             oldLength = endp.Pos;
 
-%             dir = obj.getDir(endp);
-            angle = dir(endp.Pos, obj.otherP(endp).Pos);
+            dir = obj.getDir(endp);
 
-            obj.otherP(endp).Pos = [endp.Pos(1) + (newLength) * cosd(angle), ...
-                       endp.Pos(2) + (newLength) * sind(angle)];
+            obj.otherP(endp).Pos = [endp.Pos(1) + (newLength) * cosd(dir), ...
+                       endp.Pos(2) + (newLength) * sind(dir)];
 
             if ~isequal(obj.getLength, oldLength)
                 obj.Frame.checkConnect(obj.otherP(endp));

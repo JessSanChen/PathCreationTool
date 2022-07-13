@@ -20,12 +20,42 @@ classdef Selected
             end    
         end
 
-        function pivot(obj, x, y, dtheta)
+        function pivot(obj, point, dtheta)
             for i = 1 : length(obj.Segments)
-                if ~isequal(class(obj.Segments(i)), 'Point'))
-                    obj.Segments(i).pivot(x, y, dtheta);
+                % applies to all objects except points
+                if ~isequal(class(obj.Segments(i)), 'Point')
+                    obj.Segments(i).pivot(point, dtheta);
                 end
             end    
+        end
+
+        function scale(obj, point, factor)
+            for i = 1 : length(obj.Segments)
+                % applies to all objects except points
+                if ~isequal(class(obj.Segments(i)), 'Point')
+                    obj.Segments(i).pivot(point, factor);
+                end
+            end    
+        end
+
+        function export(obj)
+            obj.Segments(1).Frame.export;  
+        end
+
+        function lengthen(obj, point, newL)
+            % newL can either be new theta or length
+            if length(obj.Segments) == 1
+                if isequal(class(obj.Segments(1)), 'LineSegment')
+                    obj.Segments(1).lengthen(point, newL)
+                elseif isequal(class(obj.Segments(1)), 'Arc')
+                    obj.Segments(1).lengthen(newL)
+                else
+                    error("Object must be an arc or line segment to lengthen")
+                end
+                
+            else
+                error("Lengthen can only apply to one segment at a time.")
+            end
         end
 
 

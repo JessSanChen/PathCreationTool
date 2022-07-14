@@ -4,17 +4,24 @@ classdef Point < handle
 
     properties
         Pos
+        Frame
     end
 
     methods
-        function obj = Point(x, y)
+        function obj = Point(f, x, y)
             % Construct an instance of this class
             %   Detailed explanation goes here
-            if nargin == 0
+            if nargin < 3 
                 x = 0;
                 y = 0;
             end
+            if nargin < 1
+                error("Must provide frame where the point exists")
+            end
             obj.Pos = [x y];
+            obj.Frame = f;
+
+            obj.Frame.addPoint(obj);
         end
 
         function translate(obj, dx, dy)

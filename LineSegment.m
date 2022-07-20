@@ -109,7 +109,7 @@ classdef LineSegment < handle
             obj.P1.Pos = [obj.P1.Pos(1) + dx, obj.P1.Pos(2) + dy];
             obj.P2.Pos = [obj.P2.Pos(1) + dx, obj.P2.Pos(2) + dy];
 
-            if dx ~= 0 && dy ~= 0
+            if ~(dx == 0 && dy == 0)
                 obj.Frame.checkConnect(obj.P1);
                 obj.Frame.checkConnect(obj.P2);
             end

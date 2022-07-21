@@ -36,6 +36,11 @@ classdef Endpoint < handle
             end
         end
 
+        function setPos(obj, newPos)
+            obj.Pos = newPos;
+            obj.Segment.Frame.checkConnect(obj);
+        end
+
 %         function val = getDir(obj, otherEnd)
 %             val = atan2d(otherEnd.Pos(2) - obj.Pos(2), ...
 %                 otherEnd.Pos(1) - obj.Pos(1));

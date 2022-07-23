@@ -105,6 +105,11 @@ classdef LineSegment < handle
 %             val = atan2d(y2 - y1,x2 - x1);
 %         end
 
+        function setPos(obj, x1,y1,x2, y2)
+            obj.P1.setPos(x1,y1);
+            obj.P2.setPos(x2,y2);
+        end
+
         function translate(obj, dx, dy)
             obj.P1.Pos = [obj.P1.Pos(1) + dx, obj.P1.Pos(2) + dy];
             obj.P2.Pos = [obj.P2.Pos(1) + dx, obj.P2.Pos(2) + dy];

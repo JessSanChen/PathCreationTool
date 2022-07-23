@@ -1,13 +1,13 @@
 
 
-classdef Selected
+classdef Group < handle
 
     properties
         Segments
     end
 
     methods
-        function obj = Selected(s)
+        function obj = Group(s)
             if nargin < 1
                 error("Please provide a frame and segment list")
             end
@@ -18,6 +18,23 @@ classdef Selected
             for i = 1 : length(obj.Segments)
                 obj.Segments(i).translate(dx, dy);
             end    
+        end
+
+        function setPos(obj,x1,y1,x2,y2)
+            if length(obj.Segments) == 1
+                if isequal(class(obj.Segments(1)), 'LineSegment')
+                    obj.Segments(1).setPos(x1,y1,x2,y2)
+                elseif isequal(class(obj.Segments(1)), 'Arc')
+                    % PLACEHOLDER
+                elseif isequal(class(obj.Segments(1)), 'Point')
+                    obj.Segments(1).setPos(x1,y1)
+                else
+                    error("Object must be an arc or line segment to lengthen")
+                end
+                
+            else
+                error("Lengthen can only apply to one segment at a time.")
+            end
         end
 
         function pivot(obj, point, dtheta)

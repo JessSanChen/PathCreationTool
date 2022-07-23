@@ -36,8 +36,8 @@ classdef Endpoint < handle
             end
         end
 
-        function setPos(obj, newPos)
-            obj.Pos = newPos;
+        function setPos(obj, x,y)
+            obj.Pos = [x y];
             obj.Segment.Frame.checkConnect(obj);
         end
 

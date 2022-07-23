@@ -219,7 +219,7 @@ function was added so that expensive singular operations only need to be
 
             % trying something
             disp("hi");
-            obj.g.Color = 'r';
+            
             
             if isvalid(obj.g)
                 if nargin(obj.on_click_callback) == 1

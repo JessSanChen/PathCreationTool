@@ -29,6 +29,7 @@ classdef Point < handle
             %   Detailed explanation goes here
             obj.Pos = [obj.P(1) + dx, obj.P(2) + dy];
         end
+        
 
 %         function obj = set.X(obj, newx)
 %             obj.X = newx;

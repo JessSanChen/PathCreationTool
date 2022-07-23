@@ -219,7 +219,16 @@ function was added so that expensive singular operations only need to be
 
             % trying something
             disp("hi");
+%             obj.g.Color = 'r';
+            % reset everything else in uiaxes parent to blue
+            for i = 1:length(obj.g.Parent.Children)
+                obj.g.Parent.Children(i).Color = 'b';
+            end
+            % only selected gets set to red
             obj.g.Color = 'r';
+            % "selected" is stored in UserData of parent uiaxes
+            obj.g.Parent.UserData = obj.g;
+
             
             if isvalid(obj.g)
                 if nargin(obj.on_click_callback) == 1

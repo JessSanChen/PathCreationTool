@@ -107,7 +107,15 @@ function was added so that expensive singular operations only need to be
             
             obj.initial_bd_fn = g.ButtonDownFcn;
             g.ButtonDownFcn = @obj.on_button_down;
-            obj.axh = g.Parent;
+%             obj.axh = g.Parent;
+
+            % hardcoding hgtransform vs axes properties
+            if isa(g.Parent, 'uiaxes')
+                obj.axh = g.Parent;
+            else
+                obj.axh = g.Parent.Parent;
+            end
+
             obj.g = g;
         end
         
@@ -218,17 +226,35 @@ function was added so that expensive singular operations only need to be
             obj.figh.WindowButtonMotionFcn = @obj.on_move;
 
             % trying something
-            disp("hi");
 %             obj.g.Color = 'r';
             % reset everything else in uiaxes parent to blue
-            for i = 1:length(obj.g.Parent.Children)
-                obj.g.Parent.Children(i).Color = 'b';
+%             for i = 1:length(obj.g.Parent.Children)
+%                 obj.g.Parent.Children(i).Color = 'b';
+%             end
+            
+            % find all children, non-hgtransform, in figure
+            allchildren = findobj(obj.axh, '-depth', 2, ...
+                '-not', 'Type','hgtransform', '-not', 'Type', 'uiaxes');
+            % set all objects in uiaxes blue
+            for i = 1:length(allchildren)
+                allchildren(i).Color = 'b';
             end
-            % only selected gets set to red
-            obj.g.Color = 'r';
-            % "selected" is stored in UserData of parent uiaxes
-            obj.g.Parent.UserData = obj.g;
 
+            % only selected linesegment is red
+            if isa(obj.g.Parent, "hgtransform")
+                for i = 1:length(obj.g.Parent.Children)
+                    obj.g.Parent.Children(i).Color = 'r';
+                end
+            else
+                obj.g.Color = 'r';
+            end
+
+            % "selected" is stored in UserData of parent uiaxes
+%             obj.g.Parent.UserData = obj.g;
+            
+            % store in uiaxes, either parent or parent of hgtransform
+            obj.axh.UserData = obj.g;
+            disp(obj.axh)
             
             if isvalid(obj.g)
                 if nargin(obj.on_click_callback) == 1

@@ -102,6 +102,10 @@ function was added so that expensive singular operations only need to be
             obj.slope = args.slope;
             obj.xlim = args.xlim;
             obj.ylim = args.ylim;
+
+            % *** on_click
+            obj.on_click_callback = args.on_click_callback;
+
             obj.on_move_callback = args.on_move_callback;
             obj.on_release_callback = args.on_release_callback;
             
@@ -110,7 +114,7 @@ function was added so that expensive singular operations only need to be
 %             obj.axh = g.Parent;
 
             % hardcoding hgtransform vs axes properties
-            if isa(g.Parent, 'uiaxes')
+            if isequal(g.Parent.Type, 'axes')
                 obj.axh = g.Parent;
             else
                 obj.axh = g.Parent.Parent;
@@ -224,36 +228,34 @@ function was added so that expensive singular operations only need to be
             
             obj.figh.WindowButtonUpFcn = @obj.on_button_up;
             obj.figh.WindowButtonMotionFcn = @obj.on_move;
-
-            % trying something
-%             obj.g.Color = 'r';
-            % reset everything else in uiaxes parent to blue
-%             for i = 1:length(obj.g.Parent.Children)
-%                 obj.g.Parent.Children(i).Color = 'b';
+            
+%             % find all children, non-hgtransform, in figure
+%             allchildren = findobj(obj.axh, '-depth', 2, ...
+%                 '-not', 'Type','hgtransform', '-not', 'Type', 'axes');
+%             
+%             % if selected is part of transformed group. store in
+%             % axes.UserData
+%             transformed = [];
+%             if isequal(obj.g.Parent.Type, "hgtransform")
+%                 transformed = findobj(obj.g.Parent,'-not','Type','hgtransform');
+%                 obj.axh.UserData = obj.g.Parent;
+%             else
+%                 obj.axh.UserData = obj.g;
+%             end
+% 
+%             % set selected as red, all other objects in uiaxes blue
+%             for i = 1:length(allchildren)
+%                 % if part of hgtransform group
+%                 if ismember(allchildren(i), transformed)
+%                     allchildren(i).Color = 'r';
+%                 % if just by itself (point)
+%                 elseif isequal(allchildren(i), obj.g)
+%                     allchildren(i).Color = 'r';
+%                 else
+%                     allchildren(i).Color = 'b';
+%                 end
 %             end
             
-            % find all children, non-hgtransform, in figure
-            allchildren = findobj(obj.axh, '-depth', 2, ...
-                'Type','Plot');
-            % set all objects in uiaxes blue
-            for i = 1:length(allchildren)
-                allchildren(i).Color = 'b';
-            end
-
-            % only selected linesegment is red
-            if isa(obj.g.Parent, "hgtransform")
-                for i = 1:length(obj.g.Parent.Children)
-                    obj.g.Parent.Children(i).Color = 'r';
-                end
-            else
-                obj.g.Color = 'r';
-            end
-
-            % "selected" is stored in UserData of parent uiaxes
-%             obj.g.Parent.UserData = obj.g;
-            
-            % store in uiaxes, either parent or parent of hgtransform
-            obj.axh.UserData = obj.g
             
             if isvalid(obj.g)
                 if nargin(obj.on_click_callback) == 1
@@ -487,6 +489,10 @@ function was added so that expensive singular operations only need to be
         function args = parse(g, varargin)
             constraint = draggable.NO_CONSTRAINT;
             p = [];
+
+            % *** try making on_click_callback
+            on_click_callback = @(varargin)[];
+
             on_move_callback = @(varargin)[];
             on_release_callback = @(varargin)[];
             end_of_input = false;
@@ -500,6 +506,9 @@ function was added so that expensive singular operations only need to be
                 figh = current_h;
             end
             
+            % *** on_move already done
+            on_move_done = false;
+
             for k = 1:nargin - 1
                 current_arg = varargin{k};
                 if isa(current_arg, "function_handle") && end_of_input
@@ -508,6 +517,12 @@ function was added so that expensive singular operations only need to be
                     end_of_input = false;
                 elseif isa(current_arg, "function_handle")
                     on_move_callback = current_arg;
+                    on_move_done = true;
+                
+                % *** on_click testing
+                elseif isa(current_arg, "function_handle") && on_move_done
+                    on_click_callback = current_arg;
+
                 end
                 if ischar(current_arg) || isstring(current_arg) || iscellstr(current_arg)
                     current_arg = string(current_arg);
@@ -579,6 +594,10 @@ function was added so that expensive singular operations only need to be
             args.slope = slope;
             args.xlim = xlim;
             args.ylim = ylim;
+
+            % *** on_click
+            args.on_click_callback = on_click_callback;
+
             args.on_move_callback = on_move_callback;
             args.on_release_callback = on_release_callback;
         end

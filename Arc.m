@@ -1,6 +1,6 @@
 
 
-classdef Arc < Handle
+classdef Arc < handle
     % Summary of this class goes here
     %   Detailed explanation goes here
 
@@ -43,7 +43,7 @@ classdef Arc < Handle
                 error("Please provide a frame for this segment");
             end
             obj.P1 = Endpoint(x1, y1, obj);
-            obj.C = Point(cx, cy);
+            obj.C = Point(f, cx, cy);
             obj.Theta = theta;
             obj.MaxAccel = maxAccel;
             obj.StartSpeed = startSpeed;
@@ -60,6 +60,8 @@ classdef Arc < Handle
             % calc P2
             obj.P2 = Endpoint(0,0,obj);
             obj.calcP2;
+
+            disp(obj.P2.Pos)
 
             obj.Resolution = 50;
         end
@@ -79,15 +81,16 @@ classdef Arc < Handle
         function val = getAnchorDir(obj)
             % get dir of "anchor" point (P1) from center
 
-            val = dir(obj.P1.Pos, obj.C.Pos);
+            val = dir(obj.C.Pos, obj.P1.Pos);
         end
 
         function calcP2(obj)
             % given anchor point, use theta/radius to calc other point
             % like geogebra, can ONLY GO COUNTERCLOCKWISE            
 
-            pDir = obj.getAnchorDir + obj.Theta;
-            radius = obj.getRadius;
+            obj.getAnchorDir
+            pDir = obj.getAnchorDir + obj.Theta
+            radius = obj.getRadius
             px = obj.C.Pos(1) + radius * cosd(pDir);
             py = obj.C.Pos(2) + radius * sind(pDir);
             obj.P2.Pos = [px py]; % why can't we just return [px py]

@@ -1,6 +1,6 @@
 
 
-classdef Arc < handle
+classdef Arc < Segment
     % Summary of this class goes here
     %   Detailed explanation goes here
 
@@ -60,6 +60,8 @@ classdef Arc < handle
             % calc P2
             obj.P2 = Endpoint(0,0,obj);
             obj.calcP2;
+
+            obj.Frame.addSegment(obj);
 
             obj.Resolution = 50;
         end

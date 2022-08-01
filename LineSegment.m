@@ -1,6 +1,6 @@
 
 
-classdef LineSegment < Segment
+classdef LineSegment < Segment & handle
     % Summary of this class goes here
     %   Detailed explanation goes here
 

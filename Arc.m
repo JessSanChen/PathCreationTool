@@ -1,6 +1,6 @@
 
 
-classdef Arc < Segment
+classdef Arc < Segment & handle
     % Summary of this class goes here
     %   Detailed explanation goes here
 
@@ -42,13 +42,13 @@ classdef Arc < Segment
             if nargin < 1
                 error("Please provide a frame for this segment");
             end
-            obj.P1 = Endpoint(x1, y1, obj);
             obj.C = Point(f, cx, cy);
             obj.Theta = theta;
             obj.MaxAccel = maxAccel;
             obj.StartSpeed = startSpeed;
             obj.MaxSpeed = maxSpeed;
             obj.Frame = f;
+            obj.P1 = Endpoint(x1, y1, obj);
 
 %             % upon instantiation, should decide if connected
 %             % framework should check & update every time a segment is

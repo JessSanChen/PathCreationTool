@@ -5,7 +5,6 @@ classdef Arc < Segment & handle
     %   Detailed explanation goes here
 
     properties
-        % CHANGE TO 2-D ARRAYS AS POINTS
         P1
         P2
         C
@@ -16,16 +15,6 @@ classdef Arc < Segment & handle
         StartSpeed
         MaxSpeed
     end
-
-%     methods(Access = protected)
-%         function cp = copy(obj)
-%              cp = Arc;
-%              cp.P1 = obj.P1;
-%              cp.P2 = obj.P2;
-%              cp.C = obj.C;
-%              cp.Theta = obj.Theta;
-%         end
-%    end
     
     methods
         function obj = Arc(f, cx,cy, ...
@@ -150,12 +139,6 @@ classdef Arc < Segment & handle
 
             obj.calcP2;
 
-%             dist2 = dist(point, obj.P2.Pos);
-%             dir2 = dir(point, obj.P2.Pos);
-%             newDir2 = dir2 + dtheta;
-%             obj.P2.Pos = [point(1) + dist2 * cosd(newDir2), ... 
-%                       point(2) + dist2 * sind(newDir2)];
-
             if ~isequal(obj.P1.Pos, old1)
                 obj.Frame.checkConnect(obj.P1);
             end
@@ -227,9 +210,6 @@ classdef Arc < Segment & handle
         function out = export(obj, endp)
             % endp is already either obj.P1 or obj.P2
             points = obj.Resolution * round(obj.getLength);
-%             theta_i = obj.getAnchorDir;
-%             theta_f = dir(obj.C.Pos, obj.P2.Pos);
-%             dtheta = theta_f - theta_i;
             theta_i = dir(obj.C.Pos, endp.Pos);
             theta_f = dir(obj.C.Pos, obj.otherP(endp).Pos);
             dtheta = theta_f - theta_i;

@@ -25,6 +25,8 @@ classdef Endpoint < handle
 
         function disconnect(obj, otherEndp)
             obj.Connected(obj.Connected == otherEndp) = [];
+            disp(otherEndp.Pos)
+            disp(otherEndp.Connected)
             otherEndp.Connected(otherEndp.Connected == obj) = [];
         end
 
@@ -40,6 +42,11 @@ classdef Endpoint < handle
             obj.Pos = [x y];
             obj.Segment.Frame.checkConnect(obj);
         end
+
+%         function val = getDir(obj, otherEnd)
+%             val = atan2d(otherEnd.Pos(2) - obj.Pos(2), ...
+%                 otherEnd.Pos(1) - obj.Pos(1));
+%         end
 
     end
 end

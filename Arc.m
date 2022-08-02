@@ -9,7 +9,6 @@ classdef Arc < Segment & handle
         P1
         P2
         C
-%         Radius % get from calc, does it need to be a prop?
         Theta % always from P1 to P2 (CCW)
         Frame
         Resolution
@@ -18,6 +17,16 @@ classdef Arc < Segment & handle
         MaxSpeed
     end
 
+%     methods(Access = protected)
+%         function cp = copy(obj)
+%              cp = Arc;
+%              cp.P1 = obj.P1;
+%              cp.P2 = obj.P2;
+%              cp.C = obj.C;
+%              cp.Theta = obj.Theta;
+%         end
+%    end
+    
     methods
         function obj = Arc(f, cx,cy, ...
                 x1,y1, theta, ...

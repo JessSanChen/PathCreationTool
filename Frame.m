@@ -93,27 +93,21 @@ classdef Frame < handle
             % won't do that here
             
             % for endps with existing connects, disconnect all
-%             disp(endp.Pos)
 
             if ~isempty(endp.Connected)
                 for i = 1 : length(endp.Connected)
-%                     disp("disconnect existing connections")
                     endp.disconnect(endp.Connected(i));
                 end
             end
             
             for i = 1 : length(obj.SegmentList)
-%                 disp("connect on board")
                 otherSeg = obj.SegmentList(i);
                 % don't connect to itself
                 if ~isequal(endp.Segment, otherSeg)
-%                     disp("different segs")
                     % checks P1 connections
                     if isequal(endp.Pos, otherSeg.P1.Pos)
-%                         disp("connect endp to other P1")
                         endp.connect(otherSeg.P1);
                     elseif isequal(endp.Pos, otherSeg.P2.Pos)
-%                         disp("connect endp to other P2")
                         endp.connect(otherSeg.P2);
                     end
                 end
@@ -127,7 +121,7 @@ classdef Frame < handle
             else
                 selected.P1.disconnectAll;
                 selected.P2.disconnectAll;
-%                 obj.SegmentList(obj.SegmentList == selected) = [];
+
                 for i = 1:length(obj.SegmentList)
                     if isequal(obj.SegmentList(i), selected)
                         obj.SegmentList(i) = [];

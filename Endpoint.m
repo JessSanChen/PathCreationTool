@@ -31,7 +31,7 @@ classdef Endpoint < handle
         function disconnectAll(obj)
             if ~isempty(obj.Connected)
                 for i = 1:length(obj.Connected)
-                    obj.disconnect(obj.Connected(i))
+                    obj.disconnect(obj.Connected(i));
                 end
             end
         end

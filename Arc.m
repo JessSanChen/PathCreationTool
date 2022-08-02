@@ -63,7 +63,7 @@ classdef Arc < Segment & handle
 
             obj.Frame.addSegment(obj);
 
-            obj.Resolution = 50;
+            obj.Resolution = 20;
         end
 
         function val = getRadius(obj)
@@ -82,6 +82,16 @@ classdef Arc < Segment & handle
             % get dir of "anchor" point (P1) from center
 
             val = dir(obj.C.Pos, obj.P1.Pos);
+        end
+
+        function val = otherP(obj, endp)
+            if isequal(obj.P1,endp)
+                val = obj.P2;
+            elseif isequal(obj.P2, endp)
+                val = obj.P1;
+            else
+                error('Input point is not an endpoint of this segment')
+            end
         end
 
         function calcP2(obj)
@@ -195,17 +205,25 @@ classdef Arc < Segment & handle
             obj.calcP2;
         end
 
-        function out = export(obj)
+        function out = export(obj, endp)
+            % endp is already either obj.P1 or obj.P2
             points = obj.Resolution * round(obj.getLength);
-            theta_i = obj.getAnchorDir;
-            theta_f = dir(obj.C.Pos, obj.P2.Pos);
+%             theta_i = obj.getAnchorDir;
+%             theta_f = dir(obj.C.Pos, obj.P2.Pos);
+%             dtheta = theta_f - theta_i;
+            theta_i = dir(obj.C.Pos, endp.Pos);
+            theta_f = dir(obj.C.Pos, obj.otherP(endp).Pos);
             dtheta = theta_f - theta_i;
+
             r = obj.getRadius;
             x = zeros(1,points + 1);
             y = zeros(1,points + 1);
+
             for i = 0:points
-                x(i+1) = obj.C.Pos(1) + r * cosd((dtheta)*(i/points));
-                y(i+1) = obj.C.Pos(2) + r * sind((dtheta)*(i/points));
+                x(i+1) = obj.C.Pos(1) + r * cosd(...
+                    theta_i + (dtheta)*(i/points));
+                y(i+1) = obj.C.Pos(2) + r * sind(...
+                    theta_i + (dtheta)*(i/points));
             end
             out = [x;y];
         end

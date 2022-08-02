@@ -195,22 +195,24 @@ classdef LineSegment < Segment & handle
 
         function lengthen(obj, endp, newLength)
             % changed to take in point as input
-            % CHANGE: point that is moving, NOT anchor
 
             % scale factor must be >0
             if newLength <=0
                 error('New length must be greater than 0')
             end
             
-%             oldLength = endp.Pos;
+            
+            oldLength = endp.Pos;
 
-            other = obj.otherP(endp);
-            angle = dir(other.Pos, endp.Pos);
+%             dir = obj.getDir(endp);
+            angle = dir(endp.Pos, obj.otherP(endp).Pos);
 
-            endp.Pos = [other.Pos(1) + (newLength) * cosd(angle), ...
-                       other.Pos(2) + (newLength) * sind(angle)];
+            obj.otherP(endp).Pos = [endp.Pos(1) + (newLength) * cosd(angle), ...
+                       endp.Pos(2) + (newLength) * sind(angle)];
 
-            obj.Frame.checkConnect(obj.otherP(endp));
+            if ~isequal(obj.getLength, oldLength)
+                obj.Frame.checkConnect(obj.otherP(endp));
+            end
         end
 
     end

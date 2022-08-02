@@ -9,13 +9,18 @@ classdef Path < handle
     end
 
     methods
-        function obj = Path(segmentList)
-            if nargin ~= 1
+        function obj = Path(segmentList, startp, endp)
+            if nargin < 3
+                warning("Please provide start and end points")
+                startp = [];
+                endp = [];
+            end
+            if nargin < 1
                 error("Please provide a segment list argument.")
             end
             obj.SegmentList = segmentList;
-%             obj.Start = null;
-%             obj.End = null;
+            obj.Start = startp;
+            obj.End = endp;
         end
 
         function val = calcDist(obj)

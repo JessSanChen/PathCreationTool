@@ -145,26 +145,17 @@ classdef Frame < handle
 
             if ~isempty(obj.ValidatedPath.SegmentList)
                 arr = [];
+%                 for i = 1:length(obj.ValidatedPath.SegmentList)
+%                     newarr = obj.ValidatedPath.SegmentList(i).export;
+%                     if i > 1
+%                         newarr = newarr(:,2:end);
+%                     end
+%                     arr = cat(2,arr,newarr);
+%                 end
                 
-                cursor = obj.ValidatedPath.Start;
-                i = 1;
-                while 1
-                    newarr = cursor.Segment.export(cursor);
-                    if i > 1
-                        newarr = newarr(:,2:end);
-                    else
-                        i = 2;
-                    end
-                    arr = cat(2,arr,newarr);
+                while ~isequal()
 
-                    % do-while loop
-                    if isempty(cursor.Segment.otherP(cursor).Connected)
-                        break
-                    else
-                        cursor = cursor.Segment.otherP(cursor).Connected(1);
-                    end
                 end
-
                 fname = sprintf('%s.mat', obj.Title);
                 save(fname, 'arr');
                 clear arr;
@@ -187,14 +178,4 @@ classdef Frame < handle
             path = Path(obj.SegmentList, startp, endp);
         end
     end
-end
-
-function val = dist(pos1, pos2)
-    % takes array arguments [a,b]
-    val = norm(pos1 - pos2);
-end
-
-
-function val = dir(pos1, pos2)
-    val = atan2d(pos2(2) - pos1(2),pos2(1) - pos1(1)); 
 end

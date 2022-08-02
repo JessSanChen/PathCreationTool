@@ -195,11 +195,13 @@ classdef Arc < Segment & handle
             obj.calcP2;
         end
 
-        function out = export(obj)
+        function out = export(obj, endp)
+            % endp is already either obj.P1 or obj.P2
             points = obj.Resolution * round(obj.getLength);
-            theta_i = obj.getAnchorDir;
-            theta_f = dir(obj.C.Pos, obj.P2.Pos);
-            dtheta = theta_f - theta_i;
+%             theta_i = obj.getAnchorDir;
+%             theta_f = dir(obj.C.Pos, obj.P2.Pos);
+%             dtheta = theta_f - theta_i;
+            theta_i = dir(obj.C.Pos, endp.Pos);
             r = obj.getRadius;
             x = zeros(1,points + 1);
             y = zeros(1,points + 1);

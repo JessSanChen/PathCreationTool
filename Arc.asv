@@ -9,7 +9,6 @@ classdef Arc < Segment & handle
         P1
         P2
         C
-%         Radius % get from calc, does it need to be a prop?
         Theta % always from P1 to P2 (CCW)
         Frame
         Resolution
@@ -18,6 +17,16 @@ classdef Arc < Segment & handle
         MaxSpeed
     end
 
+%     methods(Access = protected)
+%         function cp = copy(obj)
+%              cp = Arc;
+%              cp.P1 = obj.P1;
+%              cp.P2 = obj.P2;
+%              cp.C = obj.C;
+%              cp.Theta = obj.Theta;
+%         end
+%    end
+    
     methods
         function obj = Arc(f, cx,cy, ...
                 x1,y1, theta, ...
@@ -63,7 +72,7 @@ classdef Arc < Segment & handle
 
             obj.Frame.addSegment(obj);
 
-            obj.Resolution = 50;
+            obj.Resolution = 20;
         end
 
         function val = getRadius(obj)
@@ -84,12 +93,23 @@ classdef Arc < Segment & handle
             val = dir(obj.C.Pos, obj.P1.Pos);
         end
 
+        function val = otherP(obj, endp)
+            if isequal(obj.P1,endp)
+                val = obj.P2;
+            elseif isequal(obj.P2, endp)
+                val = obj.P1;
+            else
+                error('Input point is not an endpoint of this segment')
+            end
+        end
+
         function calcP2(obj)
             % given anchor point, use theta/radius to calc other point
             % like geogebra, can ONLY GO COUNTERCLOCKWISE            
 
             pDir = obj.getAnchorDir + obj.Theta;
             radius = obj.getRadius;
+            disp(radius)
             px = obj.C.Pos(1) + radius * cosd(pDir);
             py = obj.C.Pos(2) + radius * sind(pDir);
             obj.P2.setPos(px, py); 
@@ -159,7 +179,7 @@ classdef Arc < Segment & handle
             distC = dist(point, obj.C.Pos);
             dirC = dir(point, obj.C.Pos);
             newDistC = factor * distC;
-            obj.P1.Pos = [point(1) + newDistC * cosd(dirC),...
+            obj.C.Pos = [point(1) + newDistC * cosd(dirC),...
                             point(2) + newDistC * sind(dirC)];
 
             obj.calcP2;
@@ -202,12 +222,18 @@ classdef Arc < Segment & handle
 %             theta_f = dir(obj.C.Pos, obj.P2.Pos);
 %             dtheta = theta_f - theta_i;
             theta_i = dir(obj.C.Pos, endp.Pos);
+            theta_f = dir(obj.C.Pos, obj.otherP(endp).Pos);
+            dtheta = theta_f - theta_i;
+
             r = obj.getRadius;
             x = zeros(1,points + 1);
             y = zeros(1,points + 1);
+
             for i = 0:points
-                x(i+1) = obj.C.Pos(1) + r * cosd((dtheta)*(i/points));
-                y(i+1) = obj.C.Pos(2) + r * sind((dtheta)*(i/points));
+                x(i+1) = obj.C.Pos(1) + r * cosd(...
+                    theta_i + (dtheta)*(i/points));
+                y(i+1) = obj.C.Pos(2) + r * sind(...
+                    theta_i + (dtheta)*(i/points));
             end
             out = [x;y];
         end

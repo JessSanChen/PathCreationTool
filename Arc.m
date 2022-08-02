@@ -108,6 +108,8 @@ classdef Arc < Segment & handle
             % like geogebra, can ONLY GO COUNTERCLOCKWISE            
 
             pDir = obj.getAnchorDir + obj.Theta;
+            obj.C.Pos
+            obj.P1.Pos
             radius = obj.getRadius;
             px = obj.C.Pos(1) + radius * cosd(pDir);
             py = obj.C.Pos(2) + radius * sind(pDir);
@@ -140,11 +142,19 @@ classdef Arc < Segment & handle
             obj.P1.Pos = [point(1) + dist1 * cosd(newDir1), ... 
                       point(2) + dist1 * sind(newDir1)];
 
-            dist2 = dist(point, obj.P2.Pos);
-            dir2 = dir(point, obj.P2.Pos);
-            newDir2 = dir2 + dtheta;
-            obj.P2.Pos = [point(1) + dist2 * cosd(newDir2), ... 
-                      point(2) + dist2 * sind(newDir2)];
+            distC = dist(point, obj.C.Pos);
+            dirC = dir(point, obj.C.Pos);
+            newDirC = dirC + dtheta;
+            obj.C.Pos = [point(1) + distC * cosd(newDirC), ... 
+                      point(2) + distC * sind(newDirC)];
+
+            obj.calcP2;
+
+%             dist2 = dist(point, obj.P2.Pos);
+%             dir2 = dir(point, obj.P2.Pos);
+%             newDir2 = dir2 + dtheta;
+%             obj.P2.Pos = [point(1) + dist2 * cosd(newDir2), ... 
+%                       point(2) + dist2 * sind(newDir2)];
 
             if ~isequal(obj.P1.Pos, old1)
                 obj.Frame.checkConnect(obj.P1);
@@ -178,7 +188,7 @@ classdef Arc < Segment & handle
             distC = dist(point, obj.C.Pos);
             dirC = dir(point, obj.C.Pos);
             newDistC = factor * distC;
-            obj.P1.Pos = [point(1) + newDistC * cosd(dirC),...
+            obj.C.Pos = [point(1) + newDistC * cosd(dirC),...
                             point(2) + newDistC * sind(dirC)];
 
             obj.calcP2;

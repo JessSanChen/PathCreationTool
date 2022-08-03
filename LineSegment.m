@@ -57,10 +57,6 @@ classdef LineSegment < Segment & handle
         function out = export(obj, endp)
             % specify endp to start at, either P1 or P2
             points = obj.Resolution * round(obj.getLength);
-%             x1 = obj.P1.Pos(1);
-%             y1 = obj.P1.Pos(2);
-%             x2 = obj.P2.Pos(1);
-%             y2 = obj.P2.Pos(2);
 
             x1 = endp.Pos(1);
             y1 = endp.Pos(2);

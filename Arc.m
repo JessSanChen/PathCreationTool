@@ -48,12 +48,6 @@ classdef Arc < Segment & handle
             obj.Frame = f;
             obj.P1 = Endpoint(x1, y1, obj);
 
-%             % upon instantiation, should decide if connected
-%             % framework should check & update every time a segment is
-%             % created, transformed, etc.
-%             obj.e1 = [];
-%             obj.e2 = [];
-
             % instantiate endpoint
             % calc P2
             obj.P2 = Endpoint(0,0,obj);
@@ -97,8 +91,6 @@ classdef Arc < Segment & handle
             % like geogebra, can ONLY GO COUNTERCLOCKWISE            
 
             pDir = obj.getAnchorDir + obj.Theta;
-            obj.C.Pos
-            obj.P1.Pos
             radius = obj.getRadius;
             px = obj.C.Pos(1) + radius * cosd(pDir);
             py = obj.C.Pos(2) + radius * sind(pDir);
